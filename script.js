@@ -1,4 +1,3 @@
-// 3-PAGE VALENTINE EXPERIENCE - FIXED FOR GITHUB PAGES
 document.addEventListener('DOMContentLoaded', function() {
     const pages = document.querySelectorAll('.page');
     const continueBtn = document.getElementById('continueBtn');
@@ -7,12 +6,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const dots = document.querySelectorAll('.dot');
     let currentPage = 1;
 
-    // Canvas confetti
+    // Canvas confetti - FIXED POSITIONING
     const canvas = document.getElementById('confettiCanvas');
     const ctx = canvas.getContext('2d');
+    
+    // CRITICAL CANVAS FIXES
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '100';
+    
     let confettiParticles = [];
 
-    // Page navigation
+    // Page navigation - FIXED Z-INDEX
     function showPage(pageNum) {
         pages.forEach((page, index) => {
             page.classList.toggle('active', index + 1 === pageNum);
@@ -24,25 +31,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         currentPage = pageNum;
         
-        // Confetti cleanup when leaving page 2
-        if (pageNum !== 2 && pageNum !== 3) {
-            confettiParticles = [];
-        }
+        if (pageNum === 3) createConfetti();
+        else confettiParticles = [];
     }
 
-    // Page 1 → Page 2
-    continueBtn.addEventListener('click', () => {
-        showPage(2);
-    });
+    // Event Listeners
+    continueBtn.addEventListener('click', () => showPage(2));
+    yesBtn.addEventListener('click', () => showPage(3));
 
-    // Page 2 → Page 3 (Yes button)
-    yesBtn.addEventListener('click', () => {
-        showPage(3);
-        createConfetti();
-    });
-
-    // No button runs away
+    // FIXED No button runs away
     noBtn.addEventListener('mouseenter', () => {
+        const rect = noBtn.getBoundingClientRect();
         const randomX = Math.random() * (window.innerWidth - 120);
         const randomY = Math.random() * (window.innerHeight - 80);
         
@@ -51,16 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
         noBtn.style.top = randomY + 'px';
         noBtn.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         noBtn.style.transform = 'scale(1.1)';
+        noBtn.style.zIndex = '1000';
     });
 
-    // PERFECT CONFETTI EXPLOSION
+    // Confetti creation
     function createConfetti() {
         for (let i = 0; i < 80; i++) {
             confettiParticles.push({
                 x: window.innerWidth / 2,
                 y: window.innerHeight / 2,
                 vx: (Math.random() - 0.5) * 15,
-                vy: (Math.random() - 0.5) * 15,
+                vy: Math.random() * 10 - 5,
                 size: Math.random() * 6 + 3,
                 rotation: Math.random() * 360,
                 vrot: (Math.random() - 0.5) * 15,
@@ -69,28 +69,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Smooth animation loop
+    // Animation loop
     function animate() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        confettiParticles = confettiParticles.filter((p, i) => {
-            if (i % 3 !== 0 && currentPage === 3) {
+        confettiParticles = confettiParticles.filter(p => {
+            if (currentPage === 3) {
                 p.x += p.vx;
                 p.y += p.vy;
                 p.vy += 0.08;
                 p.rotation += p.vrot;
                 p.vx *= 0.99;
                 
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate(p.rotation * Math.PI / 180);
-                ctx.fillStyle = p.color;
-                ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-                ctx.restore();
+                if (p.y < canvas.height + 50) {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                    ctx.restore();
+                    return true;
+                }
             }
-            return p.y < canvas.height + 50 && currentPage === 3;
+            return false;
         });
         
         requestAnimationFrame(animate);
@@ -98,12 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     animate();
 
-    // Progress dots navigation
+    // Progress dots
     dots.forEach(dot => {
         dot.addEventListener('click', () => {
             const pageNum = parseInt(dot.dataset.page);
             showPage(pageNum);
-            if (pageNum === 3) createConfetti();
         });
     });
 
