@@ -39,9 +39,16 @@ document.addEventListener('DOMContentLoaded', function() {
     continueBtn.addEventListener('click', () => showPage(2));
     yesBtn.addEventListener('click', () => showPage(3));
 
-    // FIXED No button runs away
-    noBtn.addEventListener('mouseenter', () => {
-        const rect = noBtn.getBoundingClientRect();
+    // FIXED No button - GitHub Pages safe
+noBtn.addEventListener('mouseenter', () => {
+    // Reset first
+    noBtn.style.position = 'relative';
+    noBtn.style.left = '0';
+    noBtn.style.top = '0';
+    noBtn.style.transform = 'scale(1)';
+    
+    // Then animate away
+    requestAnimationFrame(() => {
         const randomX = Math.random() * (window.innerWidth - 120);
         const randomY = Math.random() * (window.innerHeight - 80);
         
@@ -50,8 +57,10 @@ document.addEventListener('DOMContentLoaded', function() {
         noBtn.style.top = randomY + 'px';
         noBtn.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         noBtn.style.transform = 'scale(1.1)';
-        noBtn.style.zIndex = '1000';
+        noBtn.style.zIndex = '9999';
     });
+});
+
 
     // Confetti creation
     function createConfetti() {
