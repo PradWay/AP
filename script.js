@@ -1,59 +1,113 @@
+// 3-PAGE VALENTINE EXPERIENCE - FINAL VERSION
+const pages = document.querySelectorAll('.page');
+const continueBtn = document.getElementById('continueBtn');
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
-const successMessage = document.getElementById('successMessage');
-const buttonContainer = document.querySelector('.button-container');
+const dots = document.querySelectorAll('.dot');
+let currentPage = 1;
 
-// Yes button - Shows success message
-yesBtn.addEventListener('click', function() {
-    buttonContainer.style.display = 'none';
-    successMessage.style.display = 'block';
+// Canvas confetti
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+let confettiParticles = [];
+
+// Page navigation
+function showPage(pageNum) {
+    pages.forEach((page, index) => {
+        page.classList.toggle('active', index + 1 === pageNum);
+    });
     
-    // Optional: Trigger confetti or celebration animation
-    celebrateClick();
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index + 1 === pageNum);
+    });
+    
+    currentPage = pageNum;
+    
+    // Confetti cleanup when leaving page 2
+    if (pageNum !== 2 && pageNum !== 3) {
+        confettiParticles = [];
+    }
+}
+
+// Page 1 → Page 2
+continueBtn.addEventListener('click', () => {
+    showPage(2);
 });
 
-// No button - Runs away from cursor
-noBtn.addEventListener('mouseenter', function() {
-    const randomX = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-    const randomY = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+// Page 2 → Page 3 (Yes button)
+yesBtn.addEventListener('click', () => {
+    showPage(3);
+    createConfetti();
+});
+
+// No button runs away
+noBtn.addEventListener('mouseenter', () => {
+    const randomX = Math.random() * (window.innerWidth - 120);
+    const randomY = Math.random() * (window.innerHeight - 80);
     
     noBtn.style.position = 'fixed';
     noBtn.style.left = randomX + 'px';
     noBtn.style.top = randomY + 'px';
-    noBtn.style.transition = 'all 0.4s ease-out';
+    noBtn.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+    noBtn.style.transform = 'scale(1.1)';
 });
 
-// Celebration effect (optional)
-function celebrateClick() {
-    // Create multiple hearts bursting effect
-    for (let i = 0; i < 10; i++) {
-        const heart = document.createElement('div');
-        heart.innerHTML = '💕';
-        heart.style.position = 'fixed';
-        heart.style.left = Math.random() * window.innerWidth + 'px';
-        heart.style.top = Math.random() * window.innerHeight + 'px';
-        heart.style.fontSize = (Math.random() * 30 + 30) + 'px';
-        heart.style.animation = 'heartFly 2s ease-out forwards';
-        heart.style.pointerEvents = 'none';
-        
-        document.body.appendChild(heart);
-        
-        setTimeout(() => heart.remove(), 2000);
+// PERFECT CONFETTI EXPLOSION
+function createConfetti() {
+    for (let i = 0; i < 80; i++) {
+        confettiParticles.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            vx: (Math.random() - 0.5) * 15,
+            vy: (Math.random() - 0.5) * 15,
+            size: Math.random() * 6 + 3,
+            rotation: Math.random() * 360,
+            vrot: (Math.random() - 0.5) * 15,
+            color: ['#ff6b9d', '#c44569', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'][Math.floor(Math.random() * 6)]
+        });
     }
 }
 
-// Add animation for celebration hearts
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes heartFly {
-        0% {
-            opacity: 1;
-            transform: translate(0, 0) scale(1);
+// Smooth animation loop
+function animate() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    confettiParticles = confettiParticles.filter((p, i) => {
+        if (i % 3 !== 0 && currentPage === 3) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.08;
+            p.rotation += p.vrot;
+            p.vx *= 0.99;
+            
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation * Math.PI / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+            ctx.restore();
         }
-        100% {
-            opacity: 0;
-            transform: translate(${Math.random() * 200 - 100}px, -300px) scale(0.5);
-        }
-    }
-`;
-document.head.appendChild(style);
+        return p.y < canvas.height + 50 && currentPage === 3;
+    });
+    
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// Progress dots navigation
+dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+        const pageNum = parseInt(dot.dataset.page);
+        showPage(pageNum);
+        if (pageNum === 3) createConfetti();
+    });
+});
+
+// Responsive canvas
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
