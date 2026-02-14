@@ -11,9 +11,9 @@ body {
     position: relative;
 }
 
-/* Page Transitions */
+/* FIXED PAGE TRANSITIONS - CRITICAL FIX */
 .page {
-    position: fixed;
+    position: absolute;  /* CHANGED FROM 'fixed' */
     top: 0;
     left: 0;
     width: 100%;
@@ -25,11 +25,13 @@ body {
     visibility: hidden;
     transition: all 1s ease-in-out;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 1;  /* ADDED z-index */
 }
 
 .page.active {
     opacity: 1;
     visibility: visible;
+    z-index: 10;  /* Active page always on top */
 }
 
 /* PAGE 1: Welcome */
@@ -96,6 +98,8 @@ body {
     gap: 30px;
     justify-content: center;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 20;
 }
 
 .btn {
@@ -119,10 +123,17 @@ body {
     box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
 }
 
+/* FIXED NO BUTTON */
 .btn-no {
     background: #e8e8e8;
     color: #666;
-    position: absolute;
+    position: relative !important;  /* FIXED */
+    z-index: 5;
+}
+
+.btn-no:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* PAGE 3: Love Letter */
@@ -141,7 +152,7 @@ body {
     font-size: 3.5em;
     margin-bottom: 40px;
     font-weight: 800;
-    color: #ff69b4 !important; /* Solid hot pink color */
+    color: #ff69b4 !important;
     text-shadow: 
         0 0 20px rgba(255, 105, 180, 0.6),
         0 0 40px rgba(255, 105, 180, 0.4),
@@ -159,13 +170,13 @@ body {
 }
 
 .love-title::before {
-    left: -200px;  /* ULTRA MAXIMUM distance - was -160px */
+    left: -200px;
     top: 10px;
     animation-delay: 0s;
 }
 
 .love-title::after {
-    right: -200px;  /* ULTRA MAXIMUM distance - was -160px */
+    right: -200px;
     top: 10px;
     animation-delay: 1.5s;
 }
@@ -289,65 +300,4 @@ body {
 
 @keyframes nameGlow {
     0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.5)); }
-    50% { filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.8)); }
-}
-
-@keyframes textBoxFade {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes textFadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes heartFloat {
-    0%, 100% { 
-        transform: translateY(0px) scale(1);
-        opacity: 1;
-    }
-    50% { 
-        transform: translateY(-10px) scale(1.1);
-        opacity: 0.8;
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .name-glow { font-size: 2.5em; }
-    .question { font-size: 2.5em; }
-    .love-title { 
-        font-size: 2.5em; 
-        margin-bottom: 30px;
-    }
-    .love-title::before {
-        left: -150px;  /* ULTRA MAXIMUM distance for mobile - was -120px */
-    }
-    .love-title::after {
-        right: -150px;  /* ULTRA MAXIMUM distance for mobile - was -120px */
-    }
-    .love-text-box { 
-        width: 95%; 
-        padding: 25px; 
-        margin-top: 20px;
-    }
-    .love-text-box p { 
-        font-size: 1.1em; 
-        line-height: 1.6;
-        margin-bottom: 18px;
-    }
-    .btn { padding: 15px 35px; font-size: 1em; }
-    .button-container { gap: 20px; }
-}
-
-@media (max-height: 600px) {
-    .love-text-box { 
-        max-height: 70vh;
-        padding: 25px 20px;
-    }
-}
+    50% { filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.
