@@ -1,1 +1,105 @@
-document.addEventListener('DOMContentLoaded',()=>{const e=document.querySelectorAll('.page'),t=document.getElementById('continueBtn'),n=document.getElementById('yesBtn'),o=document.getElementById('noBtn'),a=document.querySelectorAll('.dot'),s=1,c=document.getElementById('confettiCanvas'),i=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;let r=[];function d(e){r=[]}function l(t){e.forEach((e,n)=>{e.classList.toggle('active',n+1===t)}),a.forEach((e,n)=>{e.classList.toggle('active',n+1===t)}),s=t,3===t&&function(){for(let e=0;e<80;e++)r.push({x:window.innerWidth/2,y:window.innerHeight/2,vx:(Math.random()-.5)*15,vy:Math.random()*10-5,size:Math.random()*6+3,rotation:Math.random()*360,vrot:(Math.random()-.5)*15,color:['#ff6b9d','#c44569','#feca57','#ff9ff3','#54a0ff','#5f27cd'][Math.floor(6*Math.random())]})}(),2!==t&&3!==t&&d(t)}t.addEventListener('click',()=>l(2)),n.addEventListener('click',()=>l(3)),o.addEventListener('mouseenter',()=>{requestAnimationFrame(()=>{const e=Math.random()*(window.innerWidth-120),t=Math.random()*(window.innerHeight-80);o.style.position='fixed',o.style.left=e+'px',o.style.top=t+'px',o.style.transition='all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',o.style.transform='scale(1.1)',o.style.zIndex='9999'})}),function e(){c.width=window.innerWidth,c.height=window.innerHeight,i.clearRect(0,0,c.width,c.height),r=r.filter((e=>{if(3===s){if(e.x+=e.vx,e.y+=e.vy,e.vy+=.08,e.rotation+=e.vrot,e.vx*=.99,e.y<c.height+50){i.save(),i.translate(e.x,e.y),i.rotate(e.rotation*Math.PI/180),i.fillStyle=e.color,i.fillRect(-e.size/2,-e.size/2,e.size,e.size),i.restore();return!0}}return!1})),requestAnimationFrame(e)}(),a.forEach((e=>{e.addEventListener('click',()=>{l(parseInt(e.dataset.page))})})),window.addEventListener('resize',()=>{c.width=window.innerWidth,c.height=window.innerHeight})});
+document.addEventListener('DOMContentLoaded', function() {
+    // Page elements
+    const pages = document.querySelectorAll('.page');
+    const continueBtn = document.getElementById('continueBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const dots = document.querySelectorAll('.dot');
+    let currentPage = 1;
+
+    // Canvas setup
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let confettiParticles = [];
+
+    // Show page function
+    function showPage(pageNum) {
+        pages.forEach((page, index) => {
+            page.classList.toggle('active', index + 1 === pageNum);
+        });
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index + 1 === pageNum);
+        });
+        currentPage = pageNum;
+        
+        if (pageNum === 3) createConfetti();
+    }
+
+    // Event listeners
+    continueBtn.addEventListener('click', () => showPage(2));
+    yesBtn.addEventListener('click', () => showPage(3));
+
+    // No button chase effect
+    noBtn.addEventListener('mouseenter', function() {
+        const maxX = window.innerWidth - 120;
+        const maxY = window.innerHeight - 80;
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+        
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
+        noBtn.style.transition = 'all 0.5s ease';
+        noBtn.style.zIndex = '9999';
+    });
+
+    // Create confetti
+    function createConfetti() {
+        for (let i = 0; i < 100; i++) {
+            confettiParticles.push({
+                x: window.innerWidth / 2,
+                y: window.innerHeight / 2,
+                vx: (Math.random() - 0.5) * 20,
+                vy: Math.random() * 10 - 5,
+                size: Math.random() * 5 + 3,
+                rotation: Math.random() * 360,
+                color: ['#ff6b9d', '#c44569', '#ff9ff3', '#feca57'][Math.floor(Math.random() * 4)]
+            });
+        }
+    }
+
+    // Animation loop
+    function animate() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        confettiParticles = confettiParticles.filter(p => {
+            if (currentPage === 3) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.1;
+                p.rotation += 5;
+                
+                if (p.y < canvas.height + 50) {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                    ctx.restore();
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    animate();
+
+    // Dots navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => showPage(index + 1));
+    });
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+});
