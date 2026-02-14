@@ -1,0 +1,266 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    animation: slideIn 0.8s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    color: #764ba2;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(118, 75, 162, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(118, 75, 162, 0.6);
+    }
+}
+
+.intro {
+    color: #555;
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.memories {
+    background: #f8f9ff;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    border-left: 5px solid #667eea;
+}
+
+.memories p {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.7;
+    font-size: 1em;
+    text-align: left;
+}
+
+.memories p:last-child {
+    margin-bottom: 0;
+}
+
+.question {
+    color: #764ba2;
+    font-size: 2em;
+    margin: 30px 0 25px 0;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 15px 40px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-yes {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+}
+
+.btn-yes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-yes:active {
+    transform: translateY(0);
+}
+
+.btn-no {
+    background: #e0e0e0;
+    color: #333;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.success-message {
+    margin-top: 30px;
+    animation: celebrate 0.6s ease-out;
+}
+
+.success-message h3 {
+    color: #764ba2;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+
+.success-message p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+@keyframes celebrate {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Floating Hearts */
+.hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff69b4;
+    opacity: 0.6;
+    border-radius: 50%;
+    animation: float 4s infinite ease-in-out;
+}
+
+.heart:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+    width: 15px;
+    height: 15px;
+}
+
+.heart:nth-child(2) {
+    left: 20%;
+    animation-delay: 1s;
+    width: 25px;
+    height: 25px;
+}
+
+.heart:nth-child(3) {
+    left: 80%;
+    animation-delay: 2s;
+}
+
+.heart:nth-child(4) {
+    left: 70%;
+    animation-delay: 1.5s;
+    width: 18px;
+    height: 18px;
+}
+
+.heart:nth-child(5) {
+    left: 90%;
+    animation-delay: 2.5s;
+}
+
+@keyframes float {
+    0% {
+        bottom: -20px;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        bottom: 100vh;
+        opacity: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .content {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .question {
+        font-size: 1.5em;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        font-size: 1em;
+    }
+
+    .button-container {
+        gap: 15px;
+    }
+}
